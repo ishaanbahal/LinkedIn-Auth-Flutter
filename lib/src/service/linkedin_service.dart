@@ -52,9 +52,10 @@ class LinkedInService {
   ///     scopes: [LinkedInScope.EMAIL_ADDRESS, LinkedInScope.BASIC_PROFILE],
   ///    );
   /// ```
-  static LinkedInRequest getLinkedInRequest({@required String clientId,
-    @required String redirectUri,
-    @required List<LinkedInScope> scopes}) {
+  static LinkedInRequest getLinkedInRequest(
+      {@required String clientId,
+      @required String redirectUri,
+      @required List<LinkedInScope> scopes}) {
     if (clientId.isEmpty) {
       throw LinkedInException("Missing client ID, cannot be left blank");
     }
@@ -189,8 +190,7 @@ class LinkedInService {
     var res = await http.get(url, headers: headers);
     if (res.statusCode ~/ 10 != 20) {
       throw LinkedInException(
-          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res
-              .body}");
+          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
     }
     return json.decode(res.body)["elements"][0]["handle~"]["emailAddress"];
   }
@@ -201,8 +201,7 @@ class LinkedInService {
     var res = await http.get(url, headers: headers);
     if (res.statusCode ~/ 10 != 20) {
       throw LinkedInException(
-          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res
-              .body}");
+          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
     }
     return json.decode(res.body);
   }
