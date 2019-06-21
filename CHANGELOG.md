@@ -1,4 +1,9 @@
-## [0.0.2] - 27/03/2019
+## [0.0.3] - 21/06/2019
+
+* Formatting changes, package upgrades
+
+
+## [0.0.2] - 21/06/2019
 
 * Updated dependencies
 * Removed redundant logging
