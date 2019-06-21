@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:linkedin_auth/src/models/models.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
