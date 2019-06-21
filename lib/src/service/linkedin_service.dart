@@ -204,7 +204,6 @@ class LinkedInService {
           "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res
               .body}");
     }
-    print(res.body);
     return json.decode(res.body);
   }
 }

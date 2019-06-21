@@ -197,7 +197,6 @@ class MultiLocaleString {
 
   /// Returns [MultiLocaleString] from parsed JSON object
   factory MultiLocaleString.fromJson(Map<String, dynamic> parsed) {
-    print(parsed);
     var textMap = parsed["localized"] as Map<String, dynamic>;
     return MultiLocaleString(
       language: parsed["preferredLocale"]["language"] as String,
