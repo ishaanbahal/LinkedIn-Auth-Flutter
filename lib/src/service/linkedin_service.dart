@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:linkedin_auth/src/models/models.dart';
-import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:linkedin_auth/src/models/models.dart';
+import 'package:uuid/uuid.dart';
 
 class LinkedInService {
   // API Endpoints and Base url
@@ -53,9 +52,7 @@ class LinkedInService {
   ///    );
   /// ```
   static LinkedInRequest getLinkedInRequest(
-      {@required String clientId,
-      @required String redirectUri,
-      @required List<LinkedInScope> scopes}) {
+      {required String clientId, required String redirectUri, required List<LinkedInScope> scopes}) {
     if (clientId.isEmpty) {
       throw LinkedInException("Missing client ID, cannot be left blank");
     }
@@ -63,8 +60,7 @@ class LinkedInService {
       throw LinkedInException("At least one scope must be provided");
     }
     if (redirectUri.isEmpty) {
-      throw LinkedInException(
-          "Redirect URI is required and cannot be left blank");
+      throw LinkedInException("Redirect URI is required and cannot be left blank");
     }
 
     String state = Uuid().v4();
@@ -97,10 +93,10 @@ class LinkedInService {
   ///        redirectUri: "https://www.example.com/linkedin/auth");
   /// ```
   static Future<AccessToken> generateToken({
-    @required String clientId,
-    @required String clientSecret,
-    @required String code,
-    @required String redirectUri,
+    required String clientId,
+    required String clientSecret,
+    required String code,
+    required String redirectUri,
   }) async {
     Uri accessTokenUrl = Uri.https(_BASE_AUTH_URl, _ACCESS_TOKEN_PATH, {
       // Has to be hardcoded, please read: https://docs.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow
@@ -119,8 +115,8 @@ class LinkedInService {
       throw LinkedInException("Failed to fetch access token: ${res.body}");
     }
     Map<String, dynamic> parsed = json.decode(res.body);
-    String token = parsed[_ACCESS_TOKEN] as String ?? "";
-    int expiry = parsed[_EXPIRES_IN] as int ?? "";
+    String token = parsed[_ACCESS_TOKEN] as String;
+    int expiry = parsed[_EXPIRES_IN] as int;
     return AccessToken(token, expiry);
   }
 
@@ -182,15 +178,11 @@ class LinkedInService {
   ///
   static Future<String> getEmailAddress(String token) async {
     final headers = {"Authorization": "Bearer $token"};
-    Map<String, String> params = {
-      "q": "members",
-      "projection": "(elements*(handle~))"
-    };
+    Map<String, String> params = {"q": "members", "projection": "(elements*(handle~))"};
     var url = Uri.https(_API_URL, _EMAIL_API_PATH, params);
     var res = await http.get(url, headers: headers);
     if (res.statusCode ~/ 10 != 20) {
-      throw LinkedInException(
-          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
+      throw LinkedInException("Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
     }
     return json.decode(res.body)["elements"][0]["handle~"]["emailAddress"];
   }
@@ -200,8 +192,7 @@ class LinkedInService {
     Uri url = Uri.https(_API_URL, _PROFILE_API_PATH);
     var res = await http.get(url, headers: headers);
     if (res.statusCode ~/ 10 != 20) {
-      throw LinkedInException(
-          "Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
+      throw LinkedInException("Cannot fetch basic profile [${res.statusCode.toString()}]: ${res.body}");
     }
     return json.decode(res.body);
   }

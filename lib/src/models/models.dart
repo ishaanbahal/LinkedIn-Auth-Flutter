@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class LinkedInRequest {
@@ -22,7 +21,7 @@ class LinkedInRequest {
 
 class AccessToken {
   final String token;
-  DateTime expiry;
+  late DateTime expiry;
 
   AccessToken(this.token, int expiry) {
     this.expiry = DateTime.now().add(Duration(seconds: expiry));
@@ -64,27 +63,24 @@ class LiteProfile {
   final MultiLocaleString firstName, lastName, maidenName;
   final ProfileImage profileImage;
 
-  LiteProfile(
-      {@required this.id,
-      @required this.firstName,
-      @required this.lastName,
-      @required this.maidenName,
-      @required this.profileImage});
+  LiteProfile({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.maidenName,
+    required this.profileImage,
+  });
 
   /// Returns [LiteProfile] from parsed JSON object
   factory LiteProfile.fromJson(Map<String, dynamic> parsed) {
     return LiteProfile(
       id: parsed["id"] as String,
-      firstName: MultiLocaleString.fromJson(
-          parsed["firstName"] as Map<String, dynamic>),
-      lastName: MultiLocaleString.fromJson(
-          parsed["lastName"] as Map<String, dynamic>),
+      firstName: MultiLocaleString.fromJson(parsed["firstName"] as Map<String, dynamic>),
+      lastName: MultiLocaleString.fromJson(parsed["lastName"] as Map<String, dynamic>),
       maidenName: parsed.containsKey("maidenName")
-          ? MultiLocaleString.fromJson(
-              parsed["maidenName"] as Map<String, dynamic>)
+          ? MultiLocaleString.fromJson(parsed["maidenName"] as Map<String, dynamic>)
           : MultiLocaleString(text: "", language: ""),
-      profileImage: ProfileImage.fromJson(
-          parsed["profilePicture"] as Map<String, dynamic>),
+      profileImage: ProfileImage.fromJson(parsed["profilePicture"] as Map<String, dynamic>),
     );
   }
 
@@ -99,27 +95,22 @@ class LiteProfile {
 /// Caveat: LinkedIn developer page might show you access to [LinkedInScope.BASIC_PROFILE], but it might not be the case
 /// and you will see an exception. It requires special permission by LinkedIn for developer to get access to that info.
 class BasicProfile {
-  final String id,
-      localizedFirstName,
-      localizedLastName,
-      localizedMaidenName,
-      localizedHeadline,
-      vanityName;
+  final String id, localizedFirstName, localizedLastName, localizedMaidenName, localizedHeadline, vanityName;
   final MultiLocaleString firstName, lastName, maidenName, headline;
   final ProfileImage profileImage;
 
   BasicProfile({
-    @required this.id,
-    @required this.firstName,
-    @required this.lastName,
-    @required this.maidenName,
-    @required this.headline,
-    @required this.profileImage,
-    @required this.localizedFirstName,
-    @required this.localizedLastName,
-    @required this.localizedMaidenName,
-    @required this.localizedHeadline,
-    @required this.vanityName,
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.maidenName,
+    required this.headline,
+    required this.profileImage,
+    required this.localizedFirstName,
+    required this.localizedLastName,
+    required this.localizedMaidenName,
+    required this.localizedHeadline,
+    required this.vanityName,
   });
 
   /// Returns [BasicProfile] from parsed JSON object
@@ -130,8 +121,7 @@ class BasicProfile {
       lastName: MultiLocaleString.fromJson(parsed["lastName"]),
       maidenName: MultiLocaleString.fromJson(parsed["maidenName"]),
       headline: MultiLocaleString.fromJson(parsed["headline"]),
-      profileImage: ProfileImage.fromJson(
-          parsed["profilePicture"] as Map<String, String>),
+      profileImage: ProfileImage.fromJson(parsed["profilePicture"] as Map<String, String>),
       localizedFirstName: parsed["localizedFirstName"] as String,
       localizedHeadline: parsed["localizedHeadline"] as String,
       localizedLastName: parsed["localizedLastName"] as String,
@@ -152,9 +142,7 @@ class ProfileImage {
   static const _DISPLAY_IMAGE = "displayImage";
   static const _API_URI = "api.linkedin.com";
   static const _PROFILE_STREAM_PATH = "v2/me";
-  static const Map<String, String> params = {
-    "projection": "(profilePicture($_DISPLAY_IMAGE~:playableStreams))"
-  };
+  static const Map<String, String> params = {"projection": "(profilePicture($_DISPLAY_IMAGE~:playableStreams))"};
 
   final String urn;
   String _url = "";
@@ -182,8 +170,7 @@ class ProfileImage {
       throw LinkedInException("Failed to fetch image: ${res.body}");
     }
     Map<String, dynamic> parsed = json.decode(res.body);
-    this._url = parsed["profilePicture"]["displayImage~"]["elements"][0]
-        ["identifiers"][0]["identifier"];
+    this._url = parsed["profilePicture"]["displayImage~"]["elements"][0]["identifiers"][0]["identifier"];
     return _url;
   }
 }
@@ -193,7 +180,7 @@ class ProfileImage {
 class MultiLocaleString {
   final String text, language;
 
-  MultiLocaleString({@required this.text, @required this.language});
+  MultiLocaleString({required this.text, required this.language});
 
   /// Returns [MultiLocaleString] from parsed JSON object
   factory MultiLocaleString.fromJson(Map<String, dynamic> parsed) {
