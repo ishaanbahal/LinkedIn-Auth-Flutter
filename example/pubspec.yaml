@@ -1,6 +1,7 @@
 name: example
 description: LinkedIn Auth Example
 
+publish_to: none
 version: 1.0.0+1
 
 environment:
@@ -11,7 +12,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
-  linkedin_auth: any
+  linkedin_auth: 
+    path: ../
 
 dev_dependencies:
   flutter_test:
