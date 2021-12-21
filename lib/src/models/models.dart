@@ -83,8 +83,8 @@ class LiteProfile {
           ? MultiLocaleString.fromJson(
               parsed["maidenName"] as Map<String, dynamic>)
           : MultiLocaleString(text: "", language: ""),
-      profileImage: ProfileImage.fromJson(
-          parsed["profilePicture"] as Map<String, dynamic>),
+      profileImage:parsed["profilePicture"] !=null? ProfileImage.fromJson(
+          parsed["profilePicture"] as Map<String, dynamic>):null,
     );
   }
 
