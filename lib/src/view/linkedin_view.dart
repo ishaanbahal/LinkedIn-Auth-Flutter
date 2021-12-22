@@ -67,6 +67,14 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
   LinkedInRequest _request;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    final cookieManager = CookieManager();
+    cookieManager.clearCookies();
+  }
+  
+  @override
   void initState() {
     super.initState();
     _request = LinkedInService.getLinkedInRequest(
