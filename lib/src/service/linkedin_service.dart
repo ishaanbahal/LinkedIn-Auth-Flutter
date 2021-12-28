@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:linkedin_auth/src/models/models.dart';
-import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:linkedin_auth/src/models/models.dart';
+import 'package:uuid/uuid.dart';
 
 class LinkedInService {
   // API Endpoints and Base url
@@ -53,9 +52,9 @@ class LinkedInService {
   ///    );
   /// ```
   static LinkedInRequest getLinkedInRequest(
-      {@required String clientId,
-      @required String redirectUri,
-      @required List<LinkedInScope> scopes}) {
+      {required String clientId,
+      required String redirectUri,
+      required List<LinkedInScope> scopes}) {
     if (clientId.isEmpty) {
       throw LinkedInException("Missing client ID, cannot be left blank");
     }
@@ -97,10 +96,10 @@ class LinkedInService {
   ///        redirectUri: "https://www.example.com/linkedin/auth");
   /// ```
   static Future<AccessToken> generateToken({
-    @required String clientId,
-    @required String clientSecret,
-    @required String code,
-    @required String redirectUri,
+    required String clientId,
+    required String clientSecret,
+    required String code,
+    required String redirectUri,
   }) async {
     Uri accessTokenUrl = Uri.https(_BASE_AUTH_URl, _ACCESS_TOKEN_PATH, {
       // Has to be hardcoded, please read: https://docs.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow
@@ -119,8 +118,9 @@ class LinkedInService {
       throw LinkedInException("Failed to fetch access token: ${res.body}");
     }
     Map<String, dynamic> parsed = json.decode(res.body);
-    String token = parsed[_ACCESS_TOKEN] as String ?? "";
-    int expiry = parsed[_EXPIRES_IN] as int ?? "";
+    String token =
+        parsed[_ACCESS_TOKEN] != null ? parsed[_ACCESS_TOKEN] as String : "";
+    int expiry = parsed[_EXPIRES_IN] != null ? parsed[_EXPIRES_IN] as int : 0;
     return AccessToken(token, expiry);
   }
 

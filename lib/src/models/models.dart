@@ -22,7 +22,7 @@ class LinkedInRequest {
 
 class AccessToken {
   final String token;
-  DateTime expiry;
+  DateTime expiry=DateTime.now();
 
   AccessToken(this.token, int expiry) {
     this.expiry = DateTime.now().add(Duration(seconds: expiry));
@@ -62,14 +62,14 @@ class LinkedInException implements Exception {
 class LiteProfile {
   final String id;
   final MultiLocaleString firstName, lastName, maidenName;
-  final ProfileImage profileImage;
+  final ProfileImage? profileImage;
 
   LiteProfile(
-      {@required this.id,
-      @required this.firstName,
-      @required this.lastName,
-      @required this.maidenName,
-      @required this.profileImage});
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      required this.maidenName,
+      required this.profileImage});
 
   /// Returns [LiteProfile] from parsed JSON object
   factory LiteProfile.fromJson(Map<String, dynamic> parsed) {
@@ -83,14 +83,14 @@ class LiteProfile {
           ? MultiLocaleString.fromJson(
               parsed["maidenName"] as Map<String, dynamic>)
           : MultiLocaleString(text: "", language: ""),
-      profileImage: ProfileImage.fromJson(
-          parsed["profilePicture"] as Map<String, dynamic>),
+      profileImage:parsed["profilePicture"] !=null? ProfileImage.fromJson(
+          parsed["profilePicture"] as Map<String, dynamic>):null,
     );
   }
 
   @override
   String toString() {
-    return "id:$id\nfirstName:${firstName.text}\nlastName:${lastName.text}\nmaidenName:${maidenName.text}\nprofileImage:${profileImage.urn}";
+    return "id:$id\nfirstName:${firstName.text}\nlastName:${lastName.text}\nmaidenName:${maidenName.text}\nprofileImage:${profileImage?.urn}";
   }
 }
 
@@ -109,17 +109,17 @@ class BasicProfile {
   final ProfileImage profileImage;
 
   BasicProfile({
-    @required this.id,
-    @required this.firstName,
-    @required this.lastName,
-    @required this.maidenName,
-    @required this.headline,
-    @required this.profileImage,
-    @required this.localizedFirstName,
-    @required this.localizedLastName,
-    @required this.localizedMaidenName,
-    @required this.localizedHeadline,
-    @required this.vanityName,
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.maidenName,
+    required this.headline,
+    required this.profileImage,
+    required this.localizedFirstName,
+    required this.localizedLastName,
+    required this.localizedMaidenName,
+    required this.localizedHeadline,
+    required this.vanityName,
   });
 
   /// Returns [BasicProfile] from parsed JSON object
@@ -193,7 +193,7 @@ class ProfileImage {
 class MultiLocaleString {
   final String text, language;
 
-  MultiLocaleString({@required this.text, @required this.language});
+  MultiLocaleString({required this.text, required this.language});
 
   /// Returns [MultiLocaleString] from parsed JSON object
   factory MultiLocaleString.fromJson(Map<String, dynamic> parsed) {
