@@ -44,16 +44,16 @@ class LinkedInLoginView extends StatefulWidget {
 
   /// Scopes to get access for, default scope would be [LinkedInScope.LITE_PROFILE] & [LinkedInScope.EMAIL_ADDRESS]
   /// Optional field, can be ignored for default behaviour.
-  final List<LinkedInScope> scopes;
+  final List<LinkedInScope>? scopes;
 
   LinkedInLoginView(
-      {@required this.redirectUrl,
-      @required this.clientId,
-      @required this.onError,
+      {required this.redirectUrl,
+      required this.clientId,
+      required this.onError,
       this.clientSecret = "",
       this.bypassServerCheck = false,
-      this.onTokenCapture,
-      this.onServerResponse,
+     required this.onTokenCapture,
+     required this.onServerResponse,
       this.scopes});
 
   _LinkedInLoginViewState createState() => _LinkedInLoginViewState();
@@ -64,7 +64,7 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
   static const _LINKEDIN_STATE = "state";
   static const _LINKEDIN_ERROR = "error";
   static const _LINKEDIN_ERROR_DESC = "error_description";
-  LinkedInRequest _request;
+  late LinkedInRequest _request;
 
   @override
   void dispose() {
@@ -77,12 +77,11 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
   @override
   void initState() {
     super.initState();
+    List<LinkedInScope> scopelist =  [LinkedInScope.EMAIL_ADDRESS, LinkedInScope.LITE_PROFILE];
     _request = LinkedInService.getLinkedInRequest(
       clientId: widget.clientId,
       redirectUri: widget.redirectUrl,
-      scopes: widget.scopes != null
-          ? widget.scopes
-          : [LinkedInScope.EMAIL_ADDRESS, LinkedInScope.LITE_PROFILE],
+      scopes: widget.scopes ?? scopelist
     );
   }
 
@@ -114,12 +113,12 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
         return NavigationDecision.prevent;
       }
       if (params.containsKey(_LINKEDIN_STATE) &&
-          !_request.verifyState(params[_LINKEDIN_STATE])) {
+          !_request.verifyState(params[_LINKEDIN_STATE]!)) {
         widget.onError("State match failed, possible CSRF issue");
         return NavigationDecision.prevent;
       }
       if (params.containsKey(_LINKEDIN_CODE) && widget.bypassServerCheck) {
-        _getToken(params[_LINKEDIN_CODE]);
+        _getToken(params[_LINKEDIN_CODE]!);
       } else {
         _getServerData(req.url);
         return NavigationDecision.prevent;
@@ -130,7 +129,7 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
   }
 
   Future<void> _getServerData(String url) async {
-    var res = await http.get(url);
+    var res = await http.get(Uri.dataFromString(url));
     var token = widget.onServerResponse(res);
     if (widget.onTokenCapture != null) {
       widget.onTokenCapture(token);
@@ -158,7 +157,7 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
 
   String _parseError(Map<String, String> params) {
     if (params.containsKey(_LINKEDIN_ERROR)) {
-      return params[_LINKEDIN_ERROR_DESC];
+      return params[_LINKEDIN_ERROR_DESC]!;
     }
     return "";
   }
