@@ -68,8 +68,9 @@ class _LinkedInLoginViewState extends State<LinkedInLoginView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    final cookieManager = CookieManager();
+    cookieManager.clearCookies();
   }
   
   @override
